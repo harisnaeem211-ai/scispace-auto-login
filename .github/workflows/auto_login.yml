@@ -2,13 +2,6 @@ name: SciSpace Auto Login
 
 on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'  
 
 jobs:
   login:
@@ -26,11 +19,12 @@ jobs:
     - name: 📦 Install Chrome and Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
-        pip install selenium
+        sudo apt-get install -y wget
+        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+        pip install selenium webdriver-manager
         
     - name: 🚀 Run Login Script
       run: python pure_token_login.py
-      
-    - name: ✅ Complete
-      run: echo "🎉 SciSpace login completed successfully!"
